@@ -57,7 +57,7 @@ TEAM_BLOCKS = {
 }
 GENERAL_SKILLS = [
     "Digitalization", "Automation", "Documentation & Presentation",
-    "New Skill up for future business shift", "TQM ", "Japanese Training", "Strategical Planning"
+    "New Skill up for future business shift", "TQM ", "Japanese Training", "Project management"
 ]
 
 # --- Skill Descriptions (for viewing only, not used in calculations) ---
@@ -825,7 +825,7 @@ with tab1:
         """
         <div style="text-align: center; margin: 2rem 0;">
             <h2 style="font-size: 2.5rem; background: linear-gradient(135deg, #1976d2, #4caf50); 
-                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                       -webkit-background-clip: text; -webkit-text-fill-color: transparent ;
                        animation: slideInFromLeft 1s ease, textGlow 3s ease infinite alternate;">
                 🏭 BIW Process Team Strength Analytics
             </h2>
@@ -846,8 +846,6 @@ with tab1:
         unsafe_allow_html=True
     )
 
-    # --- 4 Team Pie Charts (First Block) ---
-    
     # Helper: aggregate PX, PE2, M3 and member lists for a group of skills
     def aggregate_group(skills, all_skills):
         px = pe2 = m3 = 0
@@ -897,6 +895,32 @@ with tab1:
          "PE2_members": ["ANANDAN", "Lokesh Ram", "Martin", "SILAMBARASAN"]},
     ]
 
+    # Calculate big orbital chart data (all combined)
+    total_px = sum(skill["PX"] for skill in all_skills)
+    total_pe2 = sum(skill["PE2"] for skill in all_skills)
+    total_m3 = sum(skill["M3"] for skill in all_skills)
+    
+    all_px_members = []
+    all_pe2_members = []
+    for skill in all_skills:
+        all_px_members.extend(skill.get("PX_members", []))
+        all_pe2_members.extend(skill.get("PE2_members", []))
+
+
+
+    # Add section title for the 4 smaller charts
+    st.markdown(
+        """
+        <div style="text-align: center; margin: 2rem 0 1rem 0;">
+            <h3 style="font-size: 1.8rem; color: #1976d2; 
+                       animation: fadeInUp 1s ease;">
+                📊 Detailed Skill Area Breakdown
+            </h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     skill_areas = []
     # Digital BODY
     px, pe2, m3, px_members, pe2_members = aggregate_group([
@@ -904,7 +928,8 @@ with tab1:
     ], all_skills)
     skill_areas.append({
         "Skill": "Digital BODY",
-        "PX": px, "PE2": pe2, "M3": m3
+        "PX": px, "PE2": pe2, "M3": m3,
+        "PX_members": px_members, "PE2_members": pe2_members
     })
     
     # Digital covers/Metal
@@ -913,7 +938,8 @@ with tab1:
     ], all_skills)
     skill_areas.append({
         "Skill": "Digital covers/Metal",
-        "PX": px, "PE2": pe2, "M3": m3
+        "PX": px, "PE2": pe2, "M3": m3,
+        "PX_members": px_members, "PE2_members": pe2_members
     })
     
     # Quality
@@ -922,7 +948,8 @@ with tab1:
     ], all_skills)
     skill_areas.append({
         "Skill": "Quality",
-        "PX": px, "PE2": pe2, "M3": m3
+        "PX": px, "PE2": pe2, "M3": m3,
+        "PX_members": px_members, "PE2_members": pe2_members
     })
     
     # Physical project
@@ -931,155 +958,10 @@ with tab1:
     ], all_skills)
     skill_areas.append({
         "Skill": "Physical project",
-        "PX": px, "PE2": pe2, "M3": m3
+        "PX": px, "PE2": pe2, "M3": m3,
+        "PX_members": px_members, "PE2_members": pe2_members
     })
 
-    # Create 4 orbit charts in a row
-    import numpy as np
-    cols = st.columns(4)
-    
-    # Orbit chart parameters
-    px_radius = 2
-    pe2_radius = 3.8
-    m3_radius = 5
-    
-    for idx, skill in enumerate(skill_areas):
-        fig_orbit = go.Figure()
-        
-        # Draw PX orbit (innermost)
-        if skill["PX"] > 0:
-            theta = np.linspace(0, 2 * np.pi, skill["PX"], endpoint=False)
-            x_px = px_radius * np.cos(theta)
-            y_px = px_radius * np.sin(theta)
-            px_members = skill.get("PX_members", [])
-            hover_px = []
-            for j in range(skill["PX"]):
-                if j < len(px_members):
-                    hover_px.append(f"<b>{px_members[j]}</b><br>Skill Area: {skill['Skill']}<br>Level: PX (Basic)")
-                else:
-                    hover_px.append(f"<b>{skill['Skill']}</b><br>Level: PX<br>Index: {j+1}")
-            fig_orbit.add_trace(go.Scatter(
-                x=x_px, y=y_px,
-                mode="markers",
-                marker=dict(size=12, color="#b2dfdb", line=dict(width=2, color="#0097a7")),
-                name="PX",
-                showlegend=False,
-                hoverinfo="text",
-                hovertext=hover_px
-            ))
-        
-        # Draw PE2 orbit (middle)
-        if skill["PE2"] > 0:
-            theta = np.linspace(0, 2 * np.pi, skill["PE2"], endpoint=False)
-            x_pe2 = pe2_radius * np.cos(theta)
-            y_pe2 = pe2_radius * np.sin(theta)
-            pe2_members = skill.get("PE2_members", [])
-            hover_pe2 = []
-            for j in range(skill["PE2"]):
-                if j < len(pe2_members):
-                    hover_pe2.append(f"<b>{pe2_members[j]}</b><br>Skill Area: {skill['Skill']}<br>Level: PE2 (Intermediate)")
-                else:
-                    hover_pe2.append(f"<b>{skill['Skill']}</b><br>Level: PE2<br>Index: {j+1}")
-            fig_orbit.add_trace(go.Scatter(
-                x=x_pe2, y=y_pe2,
-                mode="markers",
-                marker=dict(size=10, color="#ffd54f", line=dict(width=2, color="#ff6f00")),
-                name="PE2",
-                showlegend=False,
-                hoverinfo="text",
-                hovertext=hover_pe2
-            ))
-        
-        # Draw M3 orbit (outer)
-        if skill["M3"] > 0:
-            theta = np.linspace(0, 2 * np.pi, skill["M3"], endpoint=False)
-            x_m3 = m3_radius * np.cos(theta)
-            y_m3 = m3_radius * np.sin(theta)
-            m3_members = skill.get("M3_members", [])
-            hover_m3 = []
-            for j in range(skill["M3"]):
-                if j < len(m3_members):
-                    hover_m3.append(f"<b>{m3_members[j]}</b><br>Skill Area: {skill['Skill']}<br>Level: M3 (Expert)")
-                else:
-                    hover_m3.append(f"<b>{skill['Skill']}</b><br>Level: M3<br>Index: {j+1}")
-            fig_orbit.add_trace(go.Scatter(
-                x=x_m3, y=y_m3,
-                mode="markers",
-                marker=dict(size=10, color="#ff8a80", line=dict(width=2, color="#b71c1c")),
-                name="M3",
-                showlegend=False,
-                hoverinfo="text",
-                hovertext=hover_m3
-            ))
-
-        # Add visible grey orbit lines as circles
-        circle_shapes = []
-        circle_radii = [px_radius, pe2_radius, m3_radius]
-        for r in circle_radii:
-            circle_shapes.append(dict(
-                type="circle",
-                xref="x", yref="y",
-                x0=-r, y0=-r, x1=r, y1=r,
-                line=dict(color="#bbb", width=2, dash="dot"),
-                layer="below"
-            ))
-
-        # Add PX, PE2, M3 labels on the corresponding circles
-        angle_rad = np.deg2rad(30)
-        cos30 = np.cos(angle_rad)
-        sin30 = np.sin(angle_rad)
-        circle_labels = [
-            dict(x=px_radius * cos30, y=px_radius * sin30, xref="x", yref="y", text="PX", showarrow=False, font=dict(size=10, color="#bbb"),
-                 xanchor="left", yanchor="bottom"),
-            dict(x=pe2_radius * cos30, y=pe2_radius * sin30, xref="x", yref="y", text="PE2", showarrow=False, font=dict(size=10, color="#bbb"),
-                 xanchor="left", yanchor="bottom"),
-            dict(x=m3_radius * cos30, y=m3_radius * sin30, xref="x", yref="y", text="M3", showarrow=False, font=dict(size=10, color="#bbb"),
-                 xanchor="left", yanchor="bottom")
-        ]
-        
-        overlay_text = (
-            f"<span style='font-size:14px; color:#4a148c;'><b>PX:</b> {skill['PX']} <b>PE2:</b> {skill['PE2']} <b>M3:</b> {skill['M3']}</span>"
-        )
-        
-        fig_orbit.update_layout(
-            title=dict(
-                text=f"<b>{skill['Skill']}</b>",
-                font=dict(size=16),
-                x=0.5,
-                xanchor="center",
-            ),
-            xaxis=dict(visible=False, autorange=True, scaleanchor="y", scaleratio=1),
-            yaxis=dict(visible=False, autorange=True, scaleanchor="x", scaleratio=1),
-            showlegend=False,
-            width=300,
-            height=300,
-            margin=dict(l=10, r=10, t=40, b=40),
-            plot_bgcolor='#fff',
-            paper_bgcolor='#fff',
-            shapes=circle_shapes,
-            annotations=circle_labels + [
-                dict(
-                    x=0, y=-6, xref="x", yref="y",
-                    text=overlay_text,
-                    showarrow=False,
-                    align="center",
-                    xanchor="center",
-                    yanchor="top",
-                    font=dict(size=12, color="#4a148c"),
-                    opacity=1,
-                )
-            ]
-        )
-        
-        with cols[idx]:
-            st.plotly_chart(
-                fig_orbit,
-                use_container_width=True,
-                key=f"orbit_chart_{idx}",
-                config={"displayModeBar": False}
-            )
-
-    st.markdown("---")
 
     # Build a DataFrame: rows=teams, cols=activities, values=avg manager rating
     overview_data = {}
@@ -2066,3 +1948,105 @@ with tab2:
             st.plotly_chart(radar_fig2, use_container_width=True)
         else:
             st.warning("Selected employee not found!")
+
+# =========================
+# Big Planet Stacked Bar Chart
+# =========================
+import matplotlib.pyplot as plt
+import numpy as np
+
+def plot_big_planet_stacked_bar_chart(data, categories, planets, title="Big Planet Stacked Bar Chart"):
+    """
+    Plots a stacked bar chart for the big planet chart.
+    data: 2D list or numpy array of shape (len(planets), len(categories))
+    categories: list of category names (stacked segments)
+    planets: list of planet names (x-axis)
+    """
+    data = np.array(data)
+    ind = np.arange(len(planets))
+    bottom = np.zeros(len(planets))
+    plt.figure(figsize=(12, 7))
+    for i, cat in enumerate(categories):
+        plt.bar(ind, data[:, i], bottom=bottom, label=cat)
+        bottom += data[:, i]
+    plt.xticks(ind, planets, rotation=45, ha='right')
+    plt.ylabel('Value')
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+# Example usage (replace with your actual data):
+
+# --- BIW Skill Distribution Horizontal Stacked Bar Chart (BOTTOM OF PAGE) ---
+
+# --- BIW Skill Distribution Horizontal Stacked Bar Chart (TOP OF PAGE) ---
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+
+# Example skill data (replace with your actual aggregation logic)
+skill_data = [
+    {'Skill': 'Physical project', 'PX': 0, 'PE2': 18, 'M3': 3},
+    {'Skill': 'Quality', 'PX': 0, 'PE2': 7, 'M3': 2},
+    {'Skill': 'Digital covers/Metal', 'PX': 0, 'PE2': 7, 'M3': 2},
+    {'Skill': 'Digital BODY', 'PX': 10, 'PE2': 10, 'M3': 0}
+]
+df = pd.DataFrame(skill_data)
+
+# Add overall totals as a new row
+overall = {
+    'Skill': 'Overall',
+    'PX': df['PX'].sum(),
+    'PE2': df['PE2'].sum(),
+    'M3': df['M3'].sum()
+}
+df = pd.concat([df, pd.DataFrame([overall])], ignore_index=True)
+
+bar_df = df.set_index('Skill')
+fig = go.Figure()
+for skill in bar_df.index:
+    if skill == 'Overall':
+        px_color, pe2_color, m3_color = '#9467bd', '#8c564b', '#e377c2'
+    else:
+        px_color, pe2_color, m3_color = '#1f77b4', '#ff7f0e', '#2ca02c'
+    fig.add_trace(go.Bar(
+        y=[skill],
+        x=[bar_df.loc[skill, 'PX']],
+        name='PX' if skill != 'Overall' else 'PX (Overall)',
+        orientation='h',
+        marker_color=px_color,
+        showlegend=(skill == 'Physical project' or skill == 'Overall')
+    ))
+    fig.add_trace(go.Bar(
+        y=[skill],
+        x=[bar_df.loc[skill, 'PE2']],
+        name='PE2' if skill != 'Overall' else 'PE2 (Overall)',
+        orientation='h',
+        marker_color=pe2_color,
+        showlegend=(skill == 'Physical project' or skill == 'Overall')
+    ))
+    fig.add_trace(go.Bar(
+        y=[skill],
+        x=[bar_df.loc[skill, 'M3']],
+        name='M3' if skill != 'Overall' else 'M3 (Overall)',
+        orientation='h',
+        marker_color=m3_color,
+        showlegend=(skill == 'Physical project' or skill == 'Overall')
+    ))
+    # Add a gap before 'Overall'
+    if skill == 'Digital BODY':
+        fig.add_trace(go.Bar(
+            y=[''],
+            x=[None],
+            marker_color='rgba(0,0,0,0)',
+            showlegend=False
+        ))
+fig.update_layout(
+    barmode='stack',
+    title='BIW Process Team - Complete Skill Distribution',
+    xaxis_title='Number of Members',
+    yaxis_title='Skill',
+    height=500
+)
+st.plotly_chart(fig, use_container_width=True)
