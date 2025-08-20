@@ -3,8 +3,8 @@
 # ==========================================================
 
 import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
+import plotly.graph_objects as go
 import re
 import unicodedata
 import sqlite3
@@ -251,249 +251,122 @@ st.set_page_config(page_title="RNTBCI-PE BIW Skill Matrix", layout="wide", page_
 st.markdown(
     """
     <style>
-    /* Main background with animated gradient */
-    .main {
-        background: linear-gradient(-45deg, #e3ffe8, #f7faff, #e8f5ff, #ffe8f5);
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
+    body, .main, .block-container {
+        background: linear-gradient(120deg, #e0eafc 0%, #f8f9fa 100%) !important;
+        color: #222 !important;
+        font-family: 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif !important;
     }
-    
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    .block-container {
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(42,82,152,0.10);
+        padding: 2.5rem 2.5rem 2.5rem 2.5rem !important;
+        margin-top: 1.5rem;
+        background: rgba(255,255,255,0.90) !important;
+        backdrop-filter: blur(8px);
     }
-    
-    /* Enhanced metrics with hover effects */
-    .stMetric {
-        background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%) !important;
-        border-radius: 15px !important;
-        border: 2px solid transparent !important;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-        transform: translateY(0) !important;
+    h1, h2, h3 {
+        color: #2a5298 !important;
+        font-family: 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif !important;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        background: none !important;
+        text-shadow: 0 2px 12px rgba(42,82,152,0.08);
     }
-    
-    .stMetric:hover {
-        transform: translateY(-5px) scale(1.02) !important;
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15) !important;
-        border: 2px solid #00bcd4 !important;
-        background: linear-gradient(135deg, #b2ebf2 0%, #4dd0e1 100%) !important;
+    h1 {
+        font-size: 2.4rem !important;
+        margin-bottom: 0.7rem !important;
+        text-align: center;
+        background: none !important;
+        border-bottom: 2px solid #e0eafc;
+        padding-bottom: 0.5rem;
     }
-    
-    /* Plotly charts with enhanced animations */
-    .stPlotlyChart {
-        animation: chartSlideUp 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        transition: transform 0.3s ease;
+    h2 {
+        font-size: 1.6rem !important;
+        margin-top: 2.2rem !important;
+        margin-bottom: 1.2rem !important;
+        text-align: center;
+        border-bottom: 2px solid #e0eafc;
+        padding-bottom: 0.4rem;
     }
-    
-    .stPlotlyChart:hover {
-        transform: scale(1.01);
+    h3 {
+        font-size: 1.2rem !important;
+        margin-top: 1.7rem !important;
+        margin-bottom: 0.8rem !important;
+        text-align: left;
     }
-    
-    @keyframes chartSlideUp {
+    body, .main, .block-container, .stTabs, .stButton > button, .dataframe, .streamlit-expanderHeader, .stAlert {
+        font-size: 18px !important;
+    }
+    .stButton > button {
+        background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.4rem !important;
+        margin: 0.4rem 0.1rem !important;
+        box-shadow: 0 2px 16px rgba(42,82,152,0.10);
+        transition: background 0.2s, box-shadow 0.2s;
+        backdrop-filter: blur(2px);
+    }
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%) !important;
+        box-shadow: 0 6px 24px rgba(42,82,152,0.18);
+        border: none !important;
+    }
+    .stFileUploader > div {
+        border: 2px dashed #2a5298;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.7);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 12px rgba(42,82,152,0.06);
+        backdrop-filter: blur(2px);
+    }
+    .stFileUploader > div:hover {
+        border-color: #1e3c72;
+        background: #e0eafc;
+        transform: scale(1.02);
+    }
+    .stSlider > div > div > div {
+        background: #e0eafc !important;
+        border-radius: 6px !important;
+        height: 5px !important;
+        border: 1px solid #2a5298 !important;
+    }
+    .stSlider [role="slider"] {
+        background: #2a5298 !important;
+        border: 2px solid #fff !important;
+        box-shadow: 0 2px 8px rgba(42,82,152,0.10) !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+    .stTabs [data-baseweb="tab-panel"] {
+        animation: tabContentSlide 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(255,255,255,0.90) !important;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(42,82,152,0.08);
+        backdrop-filter: blur(4px);
+        margin-bottom: 1.5rem;
+    }
+    @keyframes tabContentSlide {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
-    
-    /* Tab enhancement with animations */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 8px;
-        backdrop-filter: blur(10px);
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        height: 60px;
-        border-radius: 12px;
-        padding: 0 24px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: rgba(255, 255, 255, 0.7);
-        border: 2px solid transparent;
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
-        transform: translateY(-2px);
-        border: 2px solid #388e3c;
-        box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%) !important;
-        color: white !important;
-        transform: translateY(-3px) !important;
-        box-shadow: 0 10px 20px rgba(33, 150, 243, 0.4) !important;
-    }
-    
-    /* Button animations */
-    .stButton > button {
-        background: linear-gradient(135deg, #64b5f6 0%, #2196f3 100%);
-        border: none;
-        border-radius: 12px;
-        padding: 12px 24px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 6px rgba(33, 150, 243, 0.3);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .stButton > button:hover {
-        background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 15px rgba(33, 150, 243, 0.4);
-    }
-    
-    .stButton > button:active {
-        transform: translateY(0) scale(0.98);
-    }
-    
-    /* Selectbox animations */
-    .stSelectbox > div > div {
-        border-radius: 12px;
-        border: 2px solid #e3f2fd;
-        transition: all 0.3s ease;
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    }
-    
-    .stSelectbox > div > div:focus-within {
-        border-color: #2196f3;
-        box-shadow: 0 0 0 3px rgba(33, 150,243, 0.1);
-        transform: scale(1.02);
-    }
-    
-    /* Slim slider with white background */
-    .stSlider > div > div > div {
-        background: white !important;
-        border-radius: 4px !important;
-        height: 4px !important;
-        border: 1px solid #e0e0e0 !important;
-    }
-    
-    /* Slider track styling */
-    .stSlider [data-baseweb="slider"] > div {
-        background: white !important;
-        height: 4px !important;
-        border-radius: 4px !important;
-    }
-    
-    /* Slider thumb/handle styling */
-    .stSlider [role="slider"] {
-        background: #2196f3 !important;
-        border: 2px solid white !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
-        width: 16px !important;
-        height: 16px !important;
-    }
-    
-    /* Remove ONLY slider text background colors */
-    .stSlider div[data-testid="stTickBar"] div,
-    .stSlider div[data-testid="stTickBar"] span,
-    .stSlider [role="slider"] + div,
-    .stSlider [role="slider"] ~ div,
-    .stSlider .stMarkdown,
-    .stSlider .stMarkdown > div,
-    .stSlider .stMarkdown p {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-    
-    /* Target specific slider label elements only */
-    .stSlider div[style*="background-color"]:not([role="slider"]) {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-    
-    /* Remove background from slider value display only */
-    .stSlider [data-testid="stSliderTickBarMin"],
-    .stSlider [data-testid="stSliderTickBarMax"] {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-    
-    /* File uploader styling */
-    .stFileUploader > div {
-        border: 2px dashed #4caf50;
-        border-radius: 15px;
-        background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
-        transition: all 0.3s ease;
-    }
-    
-    .stFileUploader > div:hover {
-        border-color: #2e7d32;
-        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-        transform: scale(1.02);
-    }
-    
-    /* Title animation */
-    h1 {
-        background: linear-gradient(135deg, #1976d2, #2196f3, #4caf50, #ff9800);
-        background-size: 300% 300%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: titleGradient 8s ease infinite;
-        text-align: center;
-        font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    @keyframes titleGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Subheader animations */
-    h2, h3 {
-        animation: slideInFromLeft 0.8s ease;
-        position: relative;
-    }
-    
-    h2::after, h3::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #2196f3, #4caf50);
-        animation: underlineExpand 1.5s ease forwards;
-    }
-    
-    @keyframes slideInFromLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes underlineExpand {
-        to {
-            width: 100px;
-        }
-    }
-    
-    /* DataFrame styling */
     .dataframe {
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 24px rgba(42,82,152,0.10);
         animation: tableSlideIn 1s ease;
+        background: rgba(255,255,255,0.90);
+        backdrop-filter: blur(2px);
     }
-    
     @keyframes tableSlideIn {
         from {
             opacity: 0;
@@ -504,68 +377,29 @@ st.markdown(
             transform: translateY(0);
         }
     }
-    
-    /* Expander enhancements */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        border-radius: 12px;
+        background: rgba(255,255,255,0.7) !important;
+        border-radius: 14px;
         transition: all 0.3s ease;
-        border: 2px solid transparent;
+        border: 2px solid #2a5298 !important;
+        box-shadow: 0 2px 12px rgba(42,82,152,0.06);
+        backdrop-filter: blur(2px);
     }
-    
     .streamlit-expanderHeader:hover {
-        background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+        background: #e0eafc !important;
         transform: scale(1.02);
-        border: 2px solid #2196f3;
-        box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
+        border: 2px solid #1e3c72 !important;
+        box-shadow: 0 4px 16px rgba(42,82,152,0.12);
     }
-    
-    /* Progress indicators */
-    .stProgress > div > div {
-        background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
-        border-radius: 10px;
-        animation: progressGlow 2s ease infinite alternate;
-    }
-    
-    @keyframes progressGlow {
-        from {
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-        }
-        to {
-            box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
-        }
-    }
-    
-    /* Loading animation for components */
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
-    }
-    
-    .loading {
-        animation: pulse 1.5s ease-in-out infinite;
-    }
-    
-    /* Floating elements */
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-    }
-    
-    .floating {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    /* Info/success/warning message enhancements */
     .stAlert {
-        border-radius: 12px;
-        border-left: 5px solid;
+        border-radius: 14px;
+        border-left: 5px solid #2a5298;
         animation: alertSlideIn 0.5s ease;
         backdrop-filter: blur(5px);
+        background: rgba(255,255,255,0.90) !important;
+        color: #222 !important;
+        box-shadow: 0 2px 12px rgba(42,82,152,0.08);
     }
-    
     @keyframes alertSlideIn {
         from {
             opacity: 0;
@@ -576,48 +410,19 @@ st.markdown(
             transform: translateX(0);
         }
     }
-    
-    /* Custom scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
     }
-    
     ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #e0eafc;
         border-radius: 10px;
     }
-    
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #2196f3, #4caf50);
+        background: #2a5298;
         border-radius: 10px;
     }
-    
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #1976d2, #388e3c);
-    }
-    
-    /* Title and content animations */
-    @keyframes titleBounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
-    }
-    
-    @keyframes progressBar {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        background: #1e3c72;
     }
     </style>
     """,
@@ -627,7 +432,7 @@ st.markdown(
     """
     <div style="text-align: center; margin-bottom: 2rem;">
         <h1 style="font-size: 3rem; margin-bottom: 0.5rem; animation: titleBounce 2s ease;">
-            🏭 RNTBCI-PE BIW Skill Matrix Dashboard
+             RNTBCI-PE BIW Skill Matrix Dashboard
         </h1>
         <div style="height: 4px; background: linear-gradient(90deg, #2196f3, #4caf50, #ff9800, #e91e63); 
                     border-radius: 2px; animation: progressBar 3s ease-in-out infinite;"></div>
@@ -821,30 +626,76 @@ st.markdown(
 
 # ===================== TAB 1 =====================
 with tab1:
-    st.markdown(
-        """
-        <div style="text-align: center; margin: 2rem 0;">
-            <h2 style="font-size: 2.5rem; background: linear-gradient(135deg, #1976d2, #4caf50); 
-                       -webkit-background-clip: text; -webkit-text-fill-color: transparent ;
-                       animation: slideInFromLeft 1s ease, textGlow 3s ease infinite alternate;">
-                🏭 BIW Process Team Strength Analytics
-            </h2>
-            <div style="width: 200px; height: 3px; background: linear-gradient(90deg, #2196f3, #4caf50); 
-                        margin: 0 auto; border-radius: 2px; animation: expandWidth 1.5s ease;"></div>
-        </div>
-        <style>
-        @keyframes textGlow {
-            from { filter: drop-shadow(0 0 5px rgba(25, 118, 210, 0.5)); }
-            to { filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.8)); }
-        }
-        @keyframes expandWidth {
-            from { width: 0; }
-            to { width: 200px; }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
+    # --- PIE CHART: Skill Area Distribution (Tab 1 Top) ---
+    import plotly.graph_objects as go
+    skill_data = [
+        {'Skill': 'Physical project', 'PX': 3, 'PE2': 18, 'M3': 0},
+        {'Skill': 'Quality', 'PX': 2, 'PE2': 7, 'M3': 0},
+        {'Skill': 'Digital covers/Metal', 'PX': 2, 'PE2': 7, 'M3': 0},
+        {'Skill': 'Digital BODY', 'PX': 10, 'PE2': 10, 'M3': 0}
+    ]
+    pie_labels = [f"<b>{item['Skill']}</b><br><b>PX:{item['PX']}, PE2:{item['PE2']}</b>" for item in skill_data]
+    pie_values = [item["PX"] + item["PE2"] + item["M3"] for item in skill_data]
+    pie_colors = ["#4e79a7", "#1de5f3", "#76b7b2", "#59a14f"]  # Changed orange to gold
+    pie_fig = go.Figure(data=[go.Pie(
+        labels=pie_labels,
+        values=pie_values,
+        marker=dict(colors=pie_colors),
+        hole=0.0,
+        textinfo="label",
+        textfont=dict(size=18, color="white"),
+        pull=[0.01]*len(pie_labels)
+    )])
+    pie_fig.update_layout(
+        title=dict(text="BIW-PE Global Headcount", font=dict(size=38)),
+        legend_title="Skill Area",
+        legend=dict(font=dict(size=20)),
+        height=900
     )
+    left_col, right_col = st.columns([1,1])
+    with left_col:
+        st.plotly_chart(pie_fig)
+
+    # --- 4 Small Pie Charts for Each Team ---
+    st.markdown("<h2 style='text-align:left; margin-bottom:1rem;'>Skill Competency</h2>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    small_pie_cols = st.columns(4)
+    pie_chart_map = [
+        {"pie": "Physical project", "buttons": ["PHYSICAL"]},
+        {"pie": "Quality", "buttons": ["BOP / PQE", "IWS / QAR"]},
+        {"pie": "Digital covers/Metal", "buttons": ["Process - Covers", "Process - Metal", "JIG", "PS"]},
+        {"pie": "Digital BODY", "buttons": ["Process - Body", "JIG", "PS"]}
+    ]
+    radar_trigger = st.session_state.get("radar_trigger", None)
+    for i, mapping in enumerate(pie_chart_map):
+        team_data = next((item for item in skill_data if item["Skill"] == mapping["pie"]), None)
+        if team_data:
+            small_labels = [f"PX ({team_data['PX']})", f"PE2 ({team_data['PE2']})"]
+            small_values = [team_data['PX'], team_data['PE2']]
+            small_colors = ["#4e79a7", "#ffb300"]
+            small_pie = go.Figure(data=[go.Pie(
+                labels=small_labels,
+                values=small_values,
+                marker=dict(colors=small_colors),
+                hole=0.1,
+                textinfo="label",
+                textfont=dict(size=16, color="white"),
+                pull=[0.01, 0.01]
+            )])
+            small_pie.update_layout(
+                title=dict(text=mapping["pie"], font=dict(size=20)),
+                showlegend=False,
+                margin=dict(l=10, r=10, t=40, b=10),
+                height=400,
+                width=300
+            )
+            small_pie_cols[i].plotly_chart(small_pie)
+            # Buttons mapped below each pie chart
+            for btn_team in mapping["buttons"]:
+                unique_key = f"radar_btn_{mapping['pie'].replace(' ', '_')}_{btn_team.replace(' ', '_')}"
+                if small_pie_cols[i].button(btn_team, key=unique_key):
+                    st.session_state["radar_trigger"] = btn_team
+                    radar_trigger = btn_team
 
     # Helper: aggregate PX, PE2, M3 and member lists for a group of skills
     def aggregate_group(skills, all_skills):
@@ -909,17 +760,6 @@ with tab1:
 
 
     # Add section title for the 4 smaller charts
-    st.markdown(
-        """
-        <div style="text-align: center; margin: 2rem 0 1rem 0;">
-            <h3 style="font-size: 1.8rem; color: #1976d2; 
-                       animation: fadeInUp 1s ease;">
-                📊 Detailed Skill Area Breakdown
-            </h3>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
     skill_areas = []
     # Digital BODY
@@ -986,68 +826,7 @@ with tab1:
     overview_df.columns = columns[:overview_df.shape[1]]
 
     # Show metrics for each team (average across all activities)
-    st.markdown(
-        """
-        <div style="margin: 1.5rem 0;">
-            <h4 style="font-size: 1.5rem; color: #1976d2; text-align: center;
-                       animation: bounceIn 1s ease; position: relative;">
-                📊 Team Average Strengths
-                <span style="position: absolute; top: -5px; right: -10px; font-size: 0.8rem; 
-                             animation: pulse 2s ease infinite;">✨</span>
-            </h4>
-        </div>
-        <style>
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.05); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    team_metrics = []
-    for team in overview_df.index:
-        avg = round(overview_df.loc[team].replace(0, pd.NA).mean(), 2)
-        team_metrics.append((team, avg))
-    cols = st.columns(len(team_metrics))
-    for i, (team, avg) in enumerate(team_metrics):
-        cols[i].metric(label=team, value=f"{avg}/3")
-
-    # Show interactive activity strength graph for selected team
-    st.markdown(
-        """
-        <div style="margin: 1.5rem 0;">
-            <h4 style="font-size: 1.5rem; color: #388e3c; text-align: center;
-                       animation: fadeInScale 1.2s ease; position: relative;">
-                🎯 Click a Team for Detailed Activity Strength Radar
-                <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-                           width: 6px; height: 6px; background: #4caf50; border-radius: 50%;
-                           animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-            </h4>
-        </div>
-        <style>
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.8) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes ping {
-            75%, 100% {
-                transform: translateX(-50%) scale(2);
-                opacity: 0;
-            }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    team_buttons = st.columns(len(TEAM_BLOCKS))
-    radar_trigger = st.session_state.get("radar_trigger", None)
-    for i, team in enumerate(TEAM_BLOCKS.keys()):
-        if team_buttons[i].button(team, key=f"radar_btn_{team}"):
-            st.session_state["radar_trigger"] = team
-            radar_trigger = team
+    # ...existing code...
 
     if radar_trigger:
         skills = TEAM_BLOCKS[radar_trigger]
@@ -1062,7 +841,7 @@ with tab1:
             line=dict(color='purple', width=4),
             mode="lines+markers+text",
             text=[str(v) for v in skill_avgs_plot],
-            textfont=dict(color='gray', size=14),
+            textfont=dict(color='gray', size=20),
             textposition='top center'
         ))
         fig_biw_team.update_layout(
@@ -1082,10 +861,10 @@ with tab1:
                 )
             ),
             showlegend=True,
-            title=dict(text=f"{radar_trigger} Activity Strength Radar (Manager Ratings)", font=dict(size=22)),
-            width=900,
+            title=dict(text=f"{radar_trigger} Activity Strength Radar", font=dict(size=22)),
+            width=200,
             height=700,
-            margin=dict(l=60, r=60, t=60, b=60),
+            margin=dict(l=60, r=100, t=60, b=60),
             transition={'duration': 1500, 'easing': 'cubic-in-out'},
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)'
@@ -1101,7 +880,7 @@ with tab1:
                             animation: avgGlow 3s ease-in-out infinite alternate;
                             box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     <span style="font-size: 1.4rem; color: #495057; font-weight: 600;">
-                        📊 Overall Activity Average: <span style="color: #007bff; font-size: 1.6rem;">{biw_avg}/3</span>
+                         Overall Activity Average: <span style="color: #007bff; font-size: 1.6rem;">{biw_avg}/3</span>
                     </span>
                 </div>
             </div>
@@ -1161,7 +940,7 @@ with tab1:
                 )
             ),
             showlegend=True,
-            title=dict(text=f"{radar_trigger} Members Strength Radar (Manager Ratings)", font=dict(size=20)),
+            title=dict(text=f"{radar_trigger} Members Strength Radar", font=dict(size=20)),
             width=700,
             height=600,
             margin=dict(l=60, r=60, t=60, b=60),
@@ -1247,6 +1026,14 @@ with tab1:
 
 # ===================== TAB 2 =====================
 with tab2:
+    # --- Team Average Metrics (moved from Tab 1) ---
+    team_metrics = []
+    for team in overview_df.index:
+        avg = round(overview_df.loc[team].replace(0, pd.NA).mean(), 2)
+        team_metrics.append((team, avg))
+    cols = st.columns(len(team_metrics))
+    for i, (team, avg) in enumerate(team_metrics):
+        cols[i].metric(label=team, value=f"{avg}/3")
     # Create floating save button - Tab 2 only
     st.markdown(
         """
@@ -1985,68 +1772,3 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-# Example skill data (replace with your actual aggregation logic)
-skill_data = [
-    {'Skill': 'Physical project', 'PX': 0, 'PE2': 18, 'M3': 3},
-    {'Skill': 'Quality', 'PX': 0, 'PE2': 7, 'M3': 2},
-    {'Skill': 'Digital covers/Metal', 'PX': 0, 'PE2': 7, 'M3': 2},
-    {'Skill': 'Digital BODY', 'PX': 10, 'PE2': 10, 'M3': 0}
-]
-df = pd.DataFrame(skill_data)
-
-# Add overall totals as a new row
-overall = {
-    'Skill': 'Overall',
-    'PX': df['PX'].sum(),
-    'PE2': df['PE2'].sum(),
-    'M3': df['M3'].sum()
-}
-df = pd.concat([df, pd.DataFrame([overall])], ignore_index=True)
-
-bar_df = df.set_index('Skill')
-fig = go.Figure()
-for skill in bar_df.index:
-    if skill == 'Overall':
-        px_color, pe2_color, m3_color = '#9467bd', '#8c564b', '#e377c2'
-    else:
-        px_color, pe2_color, m3_color = '#1f77b4', '#ff7f0e', '#2ca02c'
-    fig.add_trace(go.Bar(
-        y=[skill],
-        x=[bar_df.loc[skill, 'PX']],
-        name='PX' if skill != 'Overall' else 'PX (Overall)',
-        orientation='h',
-        marker_color=px_color,
-        showlegend=(skill == 'Physical project' or skill == 'Overall')
-    ))
-    fig.add_trace(go.Bar(
-        y=[skill],
-        x=[bar_df.loc[skill, 'PE2']],
-        name='PE2' if skill != 'Overall' else 'PE2 (Overall)',
-        orientation='h',
-        marker_color=pe2_color,
-        showlegend=(skill == 'Physical project' or skill == 'Overall')
-    ))
-    fig.add_trace(go.Bar(
-        y=[skill],
-        x=[bar_df.loc[skill, 'M3']],
-        name='M3' if skill != 'Overall' else 'M3 (Overall)',
-        orientation='h',
-        marker_color=m3_color,
-        showlegend=(skill == 'Physical project' or skill == 'Overall')
-    ))
-    # Add a gap before 'Overall'
-    if skill == 'Digital BODY':
-        fig.add_trace(go.Bar(
-            y=[''],
-            x=[None],
-            marker_color='rgba(0,0,0,0)',
-            showlegend=False
-        ))
-fig.update_layout(
-    barmode='stack',
-    title='BIW Process Team - Complete Skill Distribution',
-    xaxis_title='Number of Members',
-    yaxis_title='Skill',
-    height=500
-)
-st.plotly_chart(fig, use_container_width=True)
