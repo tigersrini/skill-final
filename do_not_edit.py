@@ -11,6 +11,21 @@ import sqlite3
 import os
 import numpy as np
 
+# Add custom background color using CSS
+st.markdown(
+    """
+    <style>
+        body {
+            background-color: #f4f7fa;
+        }
+        .stApp {
+            background-color: #f4f7fa;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # === Official mapping ===
 TEAM_BLOCKS = {
     "Process - Covers": [
@@ -634,7 +649,8 @@ with tab1:
         {'Skill': 'Digital covers/Metal', 'PX': 2, 'PE2': 7, 'M3': 0},
         {'Skill': 'Digital BODY', 'PX': 10, 'PE2': 10, 'M3': 0}
     ]
-    pie_labels = [f"<b>{item['Skill']}</b><br><b>PX:{item['PX']}, PE2:{item['PE2']}</b>" for item in skill_data]
+    pie_labels = [item['Skill'] for item in skill_data]
+    pie_text = [f"{item['Skill']}<br>PX:{item['PX']}, PE2:{item['PE2']}" for item in skill_data]
     pie_values = [item["PX"] + item["PE2"] + item["M3"] for item in skill_data]
     pie_colors = ["#4e79a7", "#1de5f3", "#76b7b2", "#59a14f"]  # Changed orange to gold
     pie_fig = go.Figure(data=[go.Pie(
@@ -642,13 +658,17 @@ with tab1:
         values=pie_values,
         marker=dict(colors=pie_colors),
         hole=0.0,
-        textinfo="label",
+        text=pie_text,
+        textinfo="text",
         textfont=dict(size=18, color="white"),
         pull=[0.01]*len(pie_labels)
     )])
     pie_fig.update_layout(
-        title=dict(text="BIW-PE Global Headcount", font=dict(size=38)),
-        legend_title="Skill Area",
+        title=dict(
+            text="-PE Global Headcount -<span style='color:#4e79a9'><b>59</b></span>",
+            font=dict(size=38)
+        ),
+        legend_title="Core Teams",
         legend=dict(font=dict(size=20)),
         height=900
     )
@@ -659,6 +679,31 @@ with tab1:
     # --- 4 Small Pie Charts for Each Team ---
     st.markdown("<h2 style='text-align:left; margin-bottom:1rem;'>Skill Competency</h2>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
+    # Add custom CSS for uniform button size and background
+    st.markdown(
+        """
+        <style>
+        div[data-testid="stButton"] button {
+            background-color: #27c47d !important;
+            color: white !important;
+            min-width: 180px !important;
+            min-height: 56px !important;
+            font-size: 18px !important;
+            border-radius: 16px !important;
+            margin: 12px 0 !important;
+            box-shadow: 0 8px 2opx rgba(39,196,125,0.15) !important;
+            font-weight: 600 !important;
+            letter-spacing: 1px !important;
+            transition: background 0.2s !important;
+            display: inline-block !important;
+        }
+        div[data-testid="stButton"] button:hover {
+            background-color: #1ea76b !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
     small_pie_cols = st.columns(4)
     pie_chart_map = [
         {"pie": "Physical project", "buttons": ["PHYSICAL"]},
@@ -861,6 +906,7 @@ with tab1:
                 )
             ),
             showlegend=True,
+            legend=dict(font=dict(size=20)),
             title=dict(text=f"{radar_trigger} Activity Strength Radar", font=dict(size=22)),
             width=200,
             height=700,
@@ -874,7 +920,7 @@ with tab1:
         # Enhanced average display with animations
         st.markdown(
             f"""
-            <div style="text-align: center; margin: 1rem 0;">
+            <div style="text-align: left; margin: 2rem 0;">
                 <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                             border-radius: 15px; padding: 15px; display: inline-block;
                             animation: avgGlow 3s ease-in-out infinite alternate;
@@ -897,7 +943,7 @@ with tab1:
 
         # --- Automatically show Team Members Strength Radar after activity radar ---
         st.markdown("---")
-        st.markdown(f"### {radar_trigger} Members Strength Radar")
+        # Title hidden as requested
         members = df[df["__block__"] == radar_trigger]
         member_names = members["Name"].fillna(members["Name2"]).fillna(members["Email"]).tolist()
         mgr_avgs = []
@@ -939,8 +985,9 @@ with tab1:
                     direction="clockwise"
                 )
             ),
-            showlegend=True,
-            title=dict(text=f"{radar_trigger} Members Strength Radar", font=dict(size=20)),
+        showlegend=True,
+        legend=dict(font=dict(size=20)),
+        title=dict(text=f"{radar_trigger} Members Strength Radar", font=dict(size=20)),
             width=700,
             height=600,
             margin=dict(l=60, r=60, t=60, b=60),
@@ -948,8 +995,7 @@ with tab1:
         )
         
         members_avg = round(sum(mgr_avgs[:-1]) / len(mgr_avgs[:-1]), 2) if len(mgr_avgs) > 1 else 0
-       
-        st.markdown(f"<span style='font-size:18px; color:gray;'>Team Members Avg: <b>{members_avg}/3</b></span>", unsafe_allow_html=True)
+    # Team Members Avg line hidden as requested
         st.plotly_chart(fig_member_strength, use_container_width=True)
         
         with st.expander("📊 Manager Average Ratings per Member (out of 3)", expanded=False):
@@ -1034,7 +1080,9 @@ with tab2:
     cols = st.columns(len(team_metrics))
     for i, (team, avg) in enumerate(team_metrics):
         cols[i].metric(label=team, value=f"{avg}/3")
-    # Create floating save button - Tab 2 only
+    # Team Member Explorer header in black
+    st.markdown('<h2 style="color:#000; font-weight:700;">Team Member Explorer</h2>', unsafe_allow_html=True)
+    # ...existing code...
     st.markdown(
         """
         <div id="floating-save-button" style="position: fixed; bottom: 20px; right: 2x0px; z-index: 1000;">
@@ -1646,6 +1694,7 @@ with tab2:
                     )
                 ),
                 showlegend=True,
+                legend=dict(font=dict(size=20)),
                 title=dict(text=f"{block} Core Skills: Self vs Manager vs Target", font=dict(size=22)),
                 width=1000,
                 height=900,
