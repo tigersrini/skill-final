@@ -10,6 +10,20 @@ import unicodedata
 import sqlite3
 import os
 import numpy as np
+# --- Password Authentication ---
+def password_page():
+    st.title("Dashboard Login")
+    password = st.text_input("Enter password:", type="password")
+    if st.button("Login"):
+        if password == "RNTBCI_PE":
+            st.session_state["authenticated"] = True
+        else:
+            st.error("Incorrect password. Please try again.")
+
+# --- Main App Entry Point ---
+if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
+    password_page()
+    st.stop()
 
 # Add custom background color using CSS
 st.markdown(
@@ -40,6 +54,7 @@ TEAM_BLOCKS = {
     "Process - Body": [
         "Panel Division", "Part List", "Weld Division", "Weld Balance", "PR Check2", "Gun Panel Check",
         "Panel Comparison2", "Datum Creation", "ACL Management", "ID / Marking",
+
         "Part Flow", "Wrong Set Prevention", "Spec Sheet", "Weld Macro", "Weld Pitch Macro", "CUS Creation", 
         "Input Validation", "CM Proposals", "Report Preparation"
     ],
